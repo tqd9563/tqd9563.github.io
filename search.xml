@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>【pyod算法学习】（1）——MCD算法</title>
+      <link href="/2020/08/21/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%881%EF%BC%89%E2%80%94%E2%80%94MCD%E7%AE%97%E6%B3%95/"/>
+      <url>/2020/08/21/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%881%EF%BC%89%E2%80%94%E2%80%94MCD%E7%AE%97%E6%B3%95/</url>
+      
+        <content type="html"><![CDATA[<p>&#160; &#160; &#160; &#160; 咕咕咕，说好的要更新博客！<del>结果鸽了两个星期，之前在忙一个无关紧要的比赛</del>。回到正题，最近工作中被mentor安排想把无监督算法应用在反欺诈识别场景中，所以一直在捣鼓pyod包用来做异常样本检测，实验了里面的挺多算法的（目前只实验了一部分），然后简单的看了下这些算法对应的论文来了解一下算法的原理。今天想记一下的是里面的一个线性算法——MCD，它使用的是马氏距离作为异常检测的得分，论文链接如下<a href="http://dmrocke.ucdavis.edu/papers/HardinRocke2004.pdf">Outlierdetection in the multiple clustersetting using the minimum covariance determinant estimator</a>。</p><h1 id="1-MSD异常检测"><a href="#1-MSD异常检测" class="headerlink" title="1. MSD异常检测"></a>1. MSD异常检测</h1><p>&#160; &#160; &#160; &#160; 关于单总体的异常检测场景，一个著名的方法是计算每个样本点到全体数据“中心”的距离。如果样本到中心的距离大于某个设定好的阈值，则这个样本可能是一个异常点。在多元数据中，一种定义样本点到样本集中心的二次平方距离如下：</p><script type="math/tex; mode=display">d^2_S(X,Y) = (X-Y)^TS^{-1}(X-Y)</script><p>这里$X$是某个样本，$Y$是样本全体的中心（Location），$S$是样本集协方差矩阵（Shape），这个距离被叫做Mahalanobis平方距离（MSD）。MSD越大，样本越可能异常。</p><p>&#160; &#160; &#160; &#160; 在聚类的异常检测场景中，通过对原始数据应用某个稳健的聚类算法后，得到的各个聚类簇就可以被看作是来自一个个不同的独立的总体，而异常检测算法就可以在每个簇上单独使用，<strong>因此一个异常点通常被认为是那些到每一个聚类簇的中心的MSD都很大的点</strong>。</p><p>&#160; &#160; &#160; &#160; 然而，<strong>对于来自单总体的样本，传统的样本均值和协方差估计方法对异常值会很敏感</strong>，Hardin和Rocke(2002)提出了一种利用均值和协方差的稳健估计来对MSD进行的分布拟合，这种方法称作MCD（minimum covariance determinant， 最小协方差矩阵行列式）。</p><h1 id="2-MCD的定义与推广"><a href="#2-MCD的定义与推广" class="headerlink" title="2. MCD的定义与推广"></a>2. MCD的定义与推广</h1><h1 id="2-1-单总体MCD的定义"><a href="#2-1-单总体MCD的定义" class="headerlink" title="2.1 单总体MCD的定义"></a>2.1 单总体MCD的定义</h1><p>&#160; &#160; &#160; &#160; 对于单总体场景，给定$n$个样本，这$n$个样本的MCD指的是其中某$h$个样本的样本均值和协方差矩阵，这$h$个样本需要满足<strong>其协方差矩阵行列式是所有样本量为$h$的可能样本组合中最小的</strong>。数学语言描述如下：</p><script type="math/tex; mode=display">\begin{align*}&MCD=(\bar{X}_J^*,S_J^*) \\&J=\mathop{argmin}\limits_{\substack{K\subset\{1,2,\ldots,n\}\\|K|=h}}det(S_K^*)\\&\bar{X}_J^*=\frac{1}{h}\sum\limits_{i\in J}x_i,\;\;\;S_J^*=\frac{1}{h}\sum\limits_{i\in J}(x_i-\bar{X}_J^*)(x_i-\bar{X}_J^*)^T\end{align*}</script><p>&#160; &#160; &#160; &#160; 这里的<strong>参数$h$可以理解为全部$n$个样本中一定有至少$h$个不是偏僻样本</strong>。当$h=\lfloor(n+p+1)/2\rfloor$时，MCD有最高的可能breakdown，后面的讨论中$h$都是用这个值，并把所有样本量为$h$的样本集合叫做half sample。因为MCD是根据最“紧凑”的一组half sample计算得到的，所以异常点不会对其造成偏移影响。</p><h1 id="2-2-推广到多重聚类"><a href="#2-2-推广到多重聚类" class="headerlink" title="2.2 推广到多重聚类"></a>2.2 推广到多重聚类</h1><p>&#160; &#160; &#160; &#160;  上面的MCD概念是基于单总体的，这很容易推广到多重聚类的场景。假设经过一个不错的聚类初始化，并且知道了聚类簇的个数$g$，那么MCD就可以分别应用在这$g$个簇上，每个簇的大小由那些离这个簇最近的样本个数决定，所以每个簇的大小和每个簇对应的MCD样本数分别为$n_i, h_i=\lfloor(n_i+p+1)/2\rfloor$。</p><p>&#160; &#160; &#160; &#160; 单总体情形和多重聚类情形的区别在于，后者的MCD样本需要对每一个簇分别计算一次，因此一个良好的稳健的聚类初始化算法是很重要的。</p><h1 id="2-3-MCD的优点"><a href="#2-3-MCD的优点" class="headerlink" title="2.3 MCD的优点"></a>2.3 MCD的优点</h1><p>&#160; &#160; &#160; &#160; MCD的均值和协方差估计常被用作聚类簇的中心和形状估计。此时，对于某个具体的聚类簇被判定为异常点的样本，将不会参与估计这个簇的中心和形状（因为这个簇的中心和形状估计用的是到这个簇的MSD距离最小的$h$个样本，而异常点的MSD距离一定非常大）。进一步，对于所有的聚类簇都被判定是异常点的样本，则将不会被用来估计任何一个簇的中心和形状。</p><h1 id="3-MCD估计"><a href="#3-MCD估计" class="headerlink" title="3. MCD估计"></a>3. MCD估计</h1><p>&#160; &#160; &#160; &#160; 实际情况中除非是小样本，否则样本集精确的MCD是无法求得的，因此<strong>用来估计MCD的算法就是我们的MCD估计</strong>。对于多重聚类场景和单总体场景，MCD的估计算法是相似的，区别只是在于前者的算法初始点不是随机选择的样本子集（理由见paper）。<strong>异常检测方法并不依赖于特定的稳健聚类初始化算法</strong>，换句话说，任何一种稳健的初始化算法最终都会得到相近的异常检测结果。</p><h1 id="3-1-单总体的MCD估计算法"><a href="#3-1-单总体的MCD估计算法" class="headerlink" title="3.1 单总体的MCD估计算法"></a>3.1 单总体的MCD估计算法</h1><ol><li>初始化随机选择$h$个样本点，存放其下标记为$H_1$</li><li>计算$\bar{X}_{H_1}, S_{H_1}$。如果$det(S_{H_1})=0$，则向$H_1$中添加样本直至其行列式不等于零。</li><li>对每个样本$x_i\in X$，以上面计算出的$(\bar{X}_{H_1},\;S_{H_1})$为基准计算MSD：<script type="math/tex; mode=display">d^2_{H_1}(i)=d_{S_{H_1}}^2\big(x_i,\bar{X}_{H_1}\big)</script></li><li>将这$n$个距离从小到大排序。这里$\pi(i)$表示第$i$小的MSD距离所对应的样本的下标$:<script type="math/tex; mode=display">d^2_{H_1}(\pi(1))\leq d^2_{H_1}(\pi(2))\leq\ldots\leq d^2_{H_1}(\pi(n))</script></li><li>取这$h$个最小MSD距离的样本下标：<script type="math/tex; mode=display">H_2=\{\pi(1),\pi(2),\ldots,\pi(h)\}</script></li><li>重复步骤2-5，直至下标集$H$不再改变。</li></ol><h1 id="3-2-多重聚类场景下对各个聚类簇计算MCD估计"><a href="#3-2-多重聚类场景下对各个聚类簇计算MCD估计" class="headerlink" title="3.2 多重聚类场景下对各个聚类簇计算MCD估计"></a>3.2 多重聚类场景下对各个聚类簇计算MCD估计</h1><ol><li>首先确定一共有几个聚类簇$g$</li><li>使用某种稳健的聚类算法进行初始化，得到$g$个聚类簇，然后计算每个簇的均值和协方差阵（单总体step2）</li><li>计算每个样本点到各个簇的MSD，并根据MSD将每个样本重新分配到各个簇（每个样本被分配到其最小的MSD对应的那个簇），最后得到每个簇的大小$n_j$（单总体step3）</li><li>对重新得到的每个簇$j$，选出各自最小的$h_j$个MSD所对应的half sample（单总体step4 - 5）</li><li>对每个簇，利用刚才得到的half sample重新计算一次均值和协方差阵</li><li>重复步骤3 - 5，直到每个簇的half sample不再改变。</li></ol><h1 id="4-MCD应用于异常检测"><a href="#4-MCD应用于异常检测" class="headerlink" title="4. MCD应用于异常检测"></a>4. MCD应用于异常检测</h1><p>&#160; &#160; &#160; &#160; 在MSD的计算中使用MCD估计后，可以得到每个样本点到每个聚类簇中心的稳健距离。在第一节里提到过，一个异常点理应到每个聚类中心的距离都比较大。然而事实上<strong>并不是所有的数据集都能够在属于数据集的极端点（非异常点）和不属于数据集的极端点（异常点）之间产生明显的分界线</strong>。而为了区分这两种极端点，异常点可以用一个关于聚类的$F$分布的分位数来确定，而<strong>一个样本点被认为是异常点，当且仅当它关于每一个聚类簇都是异常的</strong>。</p><h1 id="4-1-单总体MSD分布"><a href="#4-1-单总体MSD分布" class="headerlink" title="4.1 单总体MSD分布"></a>4.1 单总体MSD分布</h1><p>&#160; &#160; &#160; &#160; 在MSD里使用了MCD估计后会导致MSD的分布性质变得未知。不过Hardin, Rocke(2002)提出了其渐近分布的结论。尽管渐近分布是一个$\chi^2_p$，使用$F$分布在各种样本大小下都能更准确地拟合到极端点（小样本下效果更佳）。该近似分布具体如下：</p><script type="math/tex; mode=display">\frac{c(m-p+1)}{mp}d^2_{S_X^*}(X_i,\bar{X}^*)\overset{·}{\sim}F_{p,m-p+1}</script><p>这里，$\bar{X}^{*}$, $S_X^{*}$分别是全体样本中心和协方差阵的MCD估计量，$p$是样本特征的维度，而$m,\; c$都是关于MCD样本的大小和形状的参数，这两个未知参数可以通过三种方式估计：模拟、渐近结果或者是渐进结果的一个调整。论文里写到参数$c$可以被这样估计：</p><script type="math/tex; mode=display">c=\frac{P(\chi^2_{p+2}\lt\chi^2_{(p,h/n)})}{h/n}</script><p>其中$\chi^2_{p+2}$表示自由度为$p+2$的卡方分布，而$\chi^2_{(p,h/n)}$表示自由度为$p$的卡方分布的$h/n$分位数。有了分布之后，就可以类比假设检验来进行异常点检测了。<strong> 注意到分布的左半边正比于样本的MSD距离，因此这也符合当样本的MSD距离越大，越可能是异常点的常理。</strong></p><h1 id="4-2-多重聚类MSD分布"><a href="#4-2-多重聚类MSD分布" class="headerlink" title="4.2 多重聚类MSD分布"></a>4.2 多重聚类MSD分布</h1><p>&#160; &#160; &#160; &#160; 这里不赘述了，详细的可以看论文。。</p><h1 id="5-利用pyod实现MCD算法"><a href="#5-利用pyod实现MCD算法" class="headerlink" title="5. 利用pyod实现MCD算法"></a>5. 利用pyod实现MCD算法</h1><p>&#160; &#160; &#160; &#160;  pyod包里的所有模型的API使用手感都和sklearn相近，上手很快。MCD算法在pyod中的实现是<code>pyod.model.mcd.MCD</code>类：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pyod</span>.<span class="title">model</span>.<span class="title">mcd</span>.<span class="title">MCD</span>(<span class="params">contamination=<span class="number">0.1</span>, store_precision=True, assume_centered=False,</span></span></span><br><span class="line"><span class="class"><span class="params">                         support_fraction=None, random_state=None</span>)</span></span><br></pre></td></tr></table></figure><p>几个参数的解释如下：</p><ul><li><code>contamination</code>：所有模型都有的参数，<strong> 也是无监督学习绕不开的参数 </strong>，意思就是数据集中异常点的比例，这个是用来乘以样本量然后给模型输出的得分来划分阈值用的。</li><li><code>store_precision</code>：没什么特别的含义</li><li><code>assume_centered</code>：对那些均值显著接近等于0又不确切等于0的数据可以设置为True，这样就不会中心化数据直接计算协方差估计。默认为False，此时均值和协方差的稳健估计会直接用FastMCD算法求得。</li><li><code>support_fraction</code>：论文中的参数$h$，默认等于$(\lfloor n_sample + n_feature - 1\rfloor / 2)$。<strong> 实际调参时这个参数需要注意，可能因为数据原因这个值如果取的小了模型会报错 = =</strong></li><li><code>random_state</code>：没啥好说的，随机种子。。而且不同随机种子出来的模型结果差距还是挺大的，可以考虑做复数次训练。</li></ul><p>&#160; &#160; &#160; &#160; pyod里的模型类的方法基本都是一样的，常用的就下面几个：</p><ul><li><code>fit(X, y=None)</code>：训练模型，只要输入训练数据$X$即可，没有标签</li><li><code>predict(X)</code>：预测一个样本是否是异常点</li><li><code>predict_proba(X, method=&quot;linear&quot;)</code>：预测一个样本是否是异常点，输出的是一个概率矩阵。其实pyod的算法本身输出的是outlier score，而<code>predict_proba()</code>方法本质上是将score映射到$[0, 1]$区间。默认的<code>method = &quot;linear&quot;</code>，文档里写的是用简单的min - max方法将score归一化，不过我自己手动min - max出来的结果和他的还是有出入的…不清楚原因；另外可选的是<code>method = &quot;unify&quot;</code></li></ul><p>&#160; &#160; &#160; &#160; 常用的属性也就下面几个：</p><ul><li><p><code>threshold</code>：基于参数<code>contamination</code>的阈值，是样本的<code>desicion_score_</code>里排名最高的前<code>n\_samples * contamination</code>个样本</p></li><li><p><code>decision_scores_</code>：训练数据的outlier score，array形式</p></li><li><code>labels_</code>：训练数据的二元标签，<strong>0表示正常样本，1表示异常样本</strong>。计算方法就是将阈值应用在<code>decision_score_</code>上。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 无监督学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyod </tag>
+            
+            <tag> 异常识别 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>我的第一篇blog</title>
+      <link href="/2020/08/09/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87blog/"/>
+      <url>/2020/08/09/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87blog/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&#160; &#160; &#160; &#160; 昨晚睡觉的时候突然心血来潮，想把以前写的一些学习笔记转移到博客上，一开始是想用CSDN或者博客园的，但是后来想了想，一来CSDN的博客布局实在不符合我的审美，二来我写的东西感觉也没什么人会看（看了可能还会误导别人产生副作用，毕竟主要是为了自己记录自己看吧）。今天百度了一下发现github也可以写个人博客，而且意！外！的！有很多好好看的主题可以选择！跟着教程倒腾了好久，应该是搞定了吧，这篇博客就当是一个测试用了哈哈。</p><h1 id="试试看数学公式的编辑效果"><a href="#试试看数学公式的编辑效果" class="headerlink" title="试试看数学公式的编辑效果"></a>试试看数学公式的编辑效果</h1><p>&#160; &#160; &#160; &#160; 我的笔记里会有很多数学公式，所以先看看编辑的效果如何。</p><ul><li>首先是行内公式：$f(x)=f(0)+f^{‘}0\delta x$。</li><li>然后是公式环境：</li></ul><script type="math/tex; mode=display">p(x\mid\theta)=\sum\limits_{k=1}^K\alpha_k\mathcal{N}(x\mid\theta_k)</script><p>为什么本地测试能看到渲染结果，但是部署到线上就不行了呢。。。</p><h1 id="一些碎碎念"><a href="#一些碎碎念" class="headerlink" title="一些碎碎念"></a>一些碎碎念</h1><p>&#160; &#160; &#160; &#160;刚入职一个月，感觉自己的工作能力还是好弱啊，工程能力低下，分析能力低下，挖掘能力也低下，就是个单纯的sql工具人而已（旁白：这也不会那也不会，可不是只能写sql了吗！）。希望这个个人博客不会是我一时心血来潮的产物吧，如果能长期稳定的更新就好了（找教程的时候看到好多人吐槽说越是研究怎么搭建个人博客的人，越是容易停更2333）</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Water </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2020/08/09/hello-world/"/>
+      <url>/2020/08/09/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>
