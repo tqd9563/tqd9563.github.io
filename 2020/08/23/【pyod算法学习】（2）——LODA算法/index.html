@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>【pyod算法学习】（2）——LODA算法 | Yuiko's Blog</title><meta name="description" content="&amp;#160; &amp;#160; &amp;#160; &amp;#160; 今天学习的是pyod里的一个非常好用的Ensemble算法：LODA（Lightweight on-line Detector of Anomalies），参考论文链接如下：Loda: Lightweight on-line detector of anomalies 1. LODA概述1.1 算法原理&amp;#160; &amp;#160; &amp;#160;"><meta name="keywords" content="pyod,异常识别"><meta name="author" content="Yuiko Teng"><meta name="copyright" content="Yuiko Teng"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://tqd9563.github.io/2020/08/23/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94LODA%E7%AE%97%E6%B3%95/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin="crossorigin"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="【pyod算法学习】（2）——LODA算法"><meta property="og:url" content="https://tqd9563.github.io/2020/08/23/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94LODA%E7%AE%97%E6%B3%95/"><meta property="og:site_name" content="Yuiko's Blog"><meta property="og:description" content="&amp;#160; &amp;#160; &amp;#160; &amp;#160; 今天学习的是pyod里的一个非常好用的Ensemble算法：LODA（Lightweight on-line Detector of Anomalies），参考论文链接如下：Loda: Lightweight on-line detector of anomalies 1. LODA概述1.1 算法原理&amp;#160; &amp;#160; &amp;#160;"><meta property="og:image" content="https://user-images.githubusercontent.com/18068963/90972681-d8288c80-e54d-11ea-9c61-6b2c7cb4ae2c.png"><meta property="article:published_time" content="2020-08-23T05:29:31.000Z"><meta property="article:modified_time" content="2020-08-23T06:35:49.267Z"><meta name="twitter:card" content="summary"><script><!-- hexo-inject:begin --><!-- hexo-inject:end -->var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bdccea35aa79e85c20b9fcf1eaba6a60";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-176079148-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-176079148-1');
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"limitCount":30,"languages":{"author":"作者: Yuiko Teng","link":"链接: ","source":"来源: Yuiko's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: {"text":"春日野丽,山吹祈里,调边亚子,黄濑弥生,四叶有栖,天之川绮罗","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: false,
+  postUpdate: '2020-08-23 14:35:49'
+}</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img {
+  opacity: 1
+}
+</style></noscript><style type="text/css">#toggle-sidebar {bottom: 80px}</style><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="Yuiko's Blog" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="/img/lala.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">4</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">3</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://user-images.githubusercontent.com/18068963/90972681-d8288c80-e54d-11ea-9c61-6b2c7cb4ae2c.png)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">Yuiko's Blog</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">【pyod算法学习】（2）——LODA算法</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-08-23T05:29:31.000Z" title="发表于 2020-08-23 13:29:31">2020-08-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-08-23T06:35:49.267Z" title="更新于 2020-08-23 14:35:49">2020-08-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">无监督学习</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><p>&#160; &#160; &#160; &#160; 今天学习的是pyod里的一个非常好用的Ensemble算法：LODA（Lightweight on-line Detector of Anomalies），参考论文链接如下：<a target="_blank" rel="noopener" href="https://link.springer.com/content/pdf/10.1007/s10994-015-5521-0.pdf">Loda: Lightweight on-line detector of anomalies</a></p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><h1 id="1-LODA概述"><a href="#1-LODA概述" class="headerlink" title="1. LODA概述"></a>1. LODA概述</h1><h2 id="1-1-算法原理"><a href="#1-1-算法原理" class="headerlink" title="1.1 算法原理"></a>1.1 算法原理</h2><p>&#160; &#160; &#160; &#160; LODA的原理其实十分的朴素简单，概括起来是：将$n$个高维样本投影到$k$个不同的一维子空间上，并利用直方图来估计每个样本每次投影后的数在全体$n$个投影结果中的密度。如果投影后的$k$维联合密度越小，则该样本是异常样本的可能性越大。</p>
+<p>&#160; &#160; &#160; &#160;具体地用数学语言描述，设训练样本是$d$维的，$\{x_i\in \mathcal{R}^d\}_{i=1}^n$，并有$k$个同样是$d$维的投影向量$\{\omega_i\}_{i=1}^n$，每个样本$x$投影后的结果是一个数$x^T\omega_i, i=1,2,\ldots,k$。设$\hat{p}_i(\cdot)$表示所有样本的第$i$组投影结果所组成的直方图密度估计函数，则最后的模型输出结果$f(x)$可以表示为如下的形式：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+f(x)&=-\frac{1}{k}\sum\limits_{i=1}^klog\hat{p}_i(x^T\omega_i)
+&=-\frac{1}{k}log\prod_{i=1}^k\hat{p}_i(x^T\omega_i)
+&=\overset{(a)}{\sim}-logp(x^T\omega_1, x^T\omega_2, \ldots, x^T\omega_k)
+\end{align*}</script><p>上式中，$p(x^T\omega_1, x^T\omega_2, \ldots, x^T\omega_k)$表示的是样本$x$投影后的$k$维联合密度。可以看出：<strong>在满足某个条件的情况下，LODA的模型输出结果正比于该样本的负对数似然，这意味着如果一个样本越不可能服从总体（对数似然取值小），则它越可能是一个异常点（模型输出得分高）</strong>。而这个需要满足的前提假设条件也很明显：对于任意两个不同的投影向量$\omega_i$和$\omega_j$，样本关于其概率分布是相互独立的。尽管这个条件在实际情况中很难满足，然而LODA仍然能取得很良好的效果。</p>
+<h2 id="1-2-算法流程"><a href="#1-2-算法流程" class="headerlink" title="1.2 算法流程"></a>1.2 算法流程</h2><p>&#160; &#160; &#160; &#160;下面两张图是节选自原论文中的算法流程：</p>
+<p>算法一：LODA训练流程<br><img src= "/img/loading.gif" data-lazy-src="https://user-images.githubusercontent.com/18068963/90972087-b4af1300-e548-11ea-87df-1a5f7fd8864d.png" alt=""></p>
+<p>算法二：LODA预测<br><img src= "/img/loading.gif" data-lazy-src="https://user-images.githubusercontent.com/18068963/90972117-dd370d00-e548-11ea-8f5f-4153cdacc428.png" alt=""></p>
+<h2 id="1-3-LODA和PCA的相似之处"><a href="#1-3-LODA和PCA的相似之处" class="headerlink" title="1.3 LODA和PCA的相似之处"></a>1.3 LODA和PCA的相似之处</h2><p>&#160; &#160; &#160; &#160; 在高维场景下，LODA和PCA有相近之处，因为在高维场景下，投影向量$\omega_i$和$\omega_j$会是近似正交的（原因是下面会提到的投影向量进行随机初始化的方法），而如果进一步假设$x^T\omega_i$与$\x^T\omega_j$是相互独立的话，所有的投影数据都将是两两正交且互不相关，这恰好是PCA的独特性质。正是因为这样，LODA的这种基于随机投影的直方图算法就和基于主成分的直方图算法十分相似了。</p>
+<h1 id="2-LODA的一些技巧和优势"><a href="#2-LODA的一些技巧和优势" class="headerlink" title="2. LODA的一些技巧和优势"></a>2. LODA的一些技巧和优势</h1><h2 id="2-1-随机投影"><a href="#2-1-随机投影" class="headerlink" title="2.1 随机投影"></a>2.1 随机投影</h2><p>&#160; &#160; &#160; &#160; LODA在进行初始化的时候，会随机生成$k$个$d$维的投影向量$\{\omega_i\}_{i=1}^n$，满足$\omega_i\sim N(0,\bold{1}^d)$，<strong>且每个向量有$d^{1/2}$个分量是非零的</strong>。每个样本经过投影后生成一个数，然后该投影向量所对应的直方图$h_i$就会进行相应的更新。全部投影完之后，密度估计$\hat{p}_i(x)$的方法也很简单，就是判断这个样本$x$投影后落入该直方图的哪一个bin中，然后密度就等于：投影后落在这个bin里的样本数/总样本数。这里用到的几个技巧或者说条件如下：</p>
+<ul>
+<li>投影向量服从多元正态分布。该想法是来自Johnson–Lindenstrauss(1984)的一个引理，证明了在这个条件下，样本点在投影空间中的$L_2$距离和在原始输入空间中有着近似的结果。</li>
+<li>投影向量的半稀疏性（$d^{1/2}$）。这个是来自Li(2007)的一个结论表明，仅当随机投影向量中有$d^{1/2}$个非零分量时，$L_2$距离才可以被维持近似不变。</li>
+</ul>
+<h2 id="2-2-处理缺失变量"><a href="#2-2-处理缺失变量" class="headerlink" title="2.2 处理缺失变量"></a>2.2 处理缺失变量</h2><p>&#160; &#160; &#160; &#160; 稀疏投影的方法使得LODA可以处理某个特征上有缺失的情况，只需要计算那些在这个特征上对应分量为0的投影直方图密度即可。用数学语言来说的话，设$x\in\mathcal{R}^d$是有特征缺失的样本，$\mathcal{J}$是缺失特征对应的下标集，而$\mathcal{I}(x)$是那些在$\mathcal{J}$里的分量全是0的投影直方图，即：$\forall i\in\mathcal{I}(x), \forall j\in \mathcal{J}, \omega_{ij}=0$，此时样本$x$的输出得分为：</p>
+<script type="math/tex; mode=display">
+f(x)=-\frac{1}{|\mathcal{I}(x)|}\sum\limits_{i\in\mathcal{I}(x)}log\hat{p}_i(x^T\omega_i)</script><h2 id="2-3-其他"><a href="#2-3-其他" class="headerlink" title="2.3 其他"></a>2.3 其他</h2><p>&#160; &#160; &#160; &#160; 原论文中第三节还有几个小节讲了一些关于异常解释、直方图构建、存储和计算复杂度等问题，可以直接看paper..</p>
+<h1 id="3-利用pyod实现LODA算法"><a href="#3-利用pyod实现LODA算法" class="headerlink" title="3. 利用pyod实现LODA算法"></a>3. 利用pyod实现LODA算法</h1><p>&#160; &#160; &#160; &#160; LODA算法在pyod中的实现是<code>pyod.model.loda.LODA</code>类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pyod</span>.<span class="title">model</span>.<span class="title">loda</span>.<span class="title">LODA</span>(<span class="params">contamination=<span class="number">0.1</span>, n_bins=<span class="number">10</span>, n_random_cuts=<span class="number">100</span></span>)</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是用LODA算法的时候要注意它本身是带有随机性的（因为是随机初始化的投影向量，所以结果肯定有不确定性），可以考虑多训练几次取平均结果。几个参数的解释如下：</p>
+<ul>
+<li><code>contamination</code>：所有模型都有的参数，<strong> 也是无监督学习绕不开的参数 </strong>，意思就是数据集中异常点的比例，这个是用来乘以样本量然后给模型输出的得分来划分阈值用的。</li>
+<li><code>n_bins</code>：每个直方图划分的bin个数</li>
+<li><code>n_random_cuts</code>：<strong>这个参数就是上面原理部分的$k$值，也就是投影向量或者说直方图的个数。</strong></li>
+</ul>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Yuiko Teng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://tqd9563.github.io/2020/08/23/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94LODA%E7%AE%97%E6%B3%95/">https://tqd9563.github.io/2020/08/23/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94LODA%E7%AE%97%E6%B3%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://tqd9563.github.io" target="_blank">Yuiko's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pyod/">pyod</a><a class="post-meta__tags" href="/tags/%E5%BC%82%E5%B8%B8%E8%AF%86%E5%88%AB/">异常识别</a></div><div class="post_share"><div class="social-share" data-image="https://user-images.githubusercontent.com/18068963/90972681-d8288c80-e54d-11ea-9c61-6b2c7cb4ae2c.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/08/21/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%881%EF%BC%89%E2%80%94%E2%80%94MCD%E7%AE%97%E6%B3%95/"><img class="next-cover" data-lazy-src="https://user-images.githubusercontent.com/18068963/90908325-cd171480-e406-11ea-8075-e3cb7e262c35.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">【pyod算法学习】（1）——MCD算法</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/08/21/【pyod算法学习】（1）——MCD算法/" title="【pyod算法学习】（1）——MCD算法"><img class="relatedPosts_cover" data-lazy-src="https://user-images.githubusercontent.com/18068963/90908325-cd171480-e406-11ea-8075-e3cb7e262c35.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-21</div><div class="relatedPosts_title">【pyod算法学习】（1）——MCD算法</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By Yuiko Teng</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">只是一个用来记些笔记的小站</div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    loader: {
+      source: {
+        '[tex]/amsCd': '[tex]/amscd'
+      }
+    },
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  var script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><div class="aplayer no-destroy" data-id="5195373284" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="true" muted></div><script src="/js/third-party/ClickShowText.js" async="async"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: [
+    'title',
+    'meta[name=description]',
+    '#config_change',
+    '#body-wrap',
+    '#rightside-config-hide',
+    '#rightside-config-show',
+    '.js-pjax'
+  ],
+  cacheBust: false,
+})
+
+document.addEventListener('pjax:complete', function () {
+  refreshFn()
+
+  $('script[data-pjax]').each(function () {
+    $(this).parent().append($(this).remove())
+  })
+
+  GLOBAL_CONFIG.islazyload && lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  if (typeof gtag === 'function') {
+    gtag('config', 'UA-176079148-1', {'page_path': window.location.pathname});
+  }
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+})
+
+document.addEventListener('pjax:send', function () {
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  $(window).off('scroll')
+
+  //reset readmode
+  $('body').hasClass('read-mode') && $('body').removeClass('read-mode')
+
+  //reset font-size
+  $('body').css('font-size') !== originFontSize && $('body').css('font-size', parseFloat(originFontSize))
+})</script></div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({{ JSON.stringify(config) }});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="{{ src }}">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

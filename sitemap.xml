@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://tqd9563.github.io/2020/08/23/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94LODA%E7%AE%97%E6%B3%95/</loc>
+    
+    <lastmod>2020-08-23</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://tqd9563.github.io/categories/index.html</loc>
     
     <lastmod>2020-08-22</lastmod>
@@ -46,29 +53,29 @@
 
   <url>
     <loc>https://tqd9563.github.io/</loc>
-    <lastmod>2020-08-22</lastmod>
+    <lastmod>2020-08-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>https://tqd9563.github.io/tags/Water/</loc>
-    <lastmod>2020-08-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tqd9563.github.io/tags/pyod/</loc>
-    <lastmod>2020-08-22</lastmod>
+    <lastmod>2020-08-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://tqd9563.github.io/tags/%E5%BC%82%E5%B8%B8%E8%AF%86%E5%88%AB/</loc>
-    <lastmod>2020-08-22</lastmod>
+    <lastmod>2020-08-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tqd9563.github.io/tags/Water/</loc>
+    <lastmod>2020-08-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -77,7 +84,7 @@
   
   <url>
     <loc>https://tqd9563.github.io/categories/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2020-08-22</lastmod>
+    <lastmod>2020-08-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
