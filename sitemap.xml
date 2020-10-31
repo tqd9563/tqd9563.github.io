@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://tqd9563.github.io/2020/10/31/python%E8%A3%85%E9%A5%B0%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
+    
+    <lastmod>2020-10-31</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://tqd9563.github.io/2020/08/23/%E3%80%90pyod%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E3%80%91%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94LODA%E7%AE%97%E6%B3%95/</loc>
     
     <lastmod>2020-08-23</lastmod>
@@ -60,6 +67,13 @@
 
   
   <url>
+    <loc>https://tqd9563.github.io/tags/%E8%A3%85%E9%A5%B0%E5%99%A8/</loc>
+    <lastmod>2020-10-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://tqd9563.github.io/tags/pyod/</loc>
     <lastmod>2020-10-31</lastmod>
     <changefreq>daily</changefreq>
@@ -81,6 +95,13 @@
   </url>
   
 
+  
+  <url>
+    <loc>https://tqd9563.github.io/categories/Python/</loc>
+    <lastmod>2020-10-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
   
   <url>
     <loc>https://tqd9563.github.io/categories/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/</loc>
