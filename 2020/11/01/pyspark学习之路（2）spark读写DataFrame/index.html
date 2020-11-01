@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>pyspark学习之路（2）用spark读写DataFrame | Yuiko's Blog</title><meta name="description" content="&amp;#160; &amp;#160; &amp;#160; &amp;#160; 这一节主要讲Spark中创建和保存DataFrame的方法，当然万事的第一步当然是初始化我们的SparkSession类。 1234567from pyspark.sql import SparkSessionspark &#x3D; SparkSession \    .builder \    .appName(&quot;Create and S"><meta name="keywords" content="pyspark"><meta name="author" content="Yuiko Teng"><meta name="copyright" content="Yuiko Teng"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://tqd9563.github.io/2020/11/01/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF%EF%BC%882%EF%BC%89spark%E8%AF%BB%E5%86%99DataFrame/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin="crossorigin"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="pyspark学习之路（2）用spark读写DataFrame"><meta property="og:url" content="https://tqd9563.github.io/2020/11/01/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF%EF%BC%882%EF%BC%89spark%E8%AF%BB%E5%86%99DataFrame/"><meta property="og:site_name" content="Yuiko's Blog"><meta property="og:description" content="&amp;#160; &amp;#160; &amp;#160; &amp;#160; 这一节主要讲Spark中创建和保存DataFrame的方法，当然万事的第一步当然是初始化我们的SparkSession类。 1234567from pyspark.sql import SparkSessionspark &#x3D; SparkSession \    .builder \    .appName(&quot;Create and S"><meta property="og:image" content="https://user-images.githubusercontent.com/18068963/97795439-11ae0000-1c41-11eb-9e35-fc72a797bfc4.jpg"><meta property="article:published_time" content="2020-11-01T02:32:43.000Z"><meta property="article:modified_time" content="2020-11-01T05:13:07.131Z"><meta name="twitter:card" content="summary"><script><!-- hexo-inject:begin --><!-- hexo-inject:end -->var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bdccea35aa79e85c20b9fcf1eaba6a60";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-176079148-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-176079148-1');
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"limitCount":30,"languages":{"author":"作者: Yuiko Teng","link":"链接: ","source":"来源: Yuiko's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: {"text":"春日野丽,山吹祈里,调边亚子,黄濑弥生,四叶有栖,天之川绮罗","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2020-11-01 13:13:07'
+}</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img {
+  opacity: 1
+}
+</style></noscript><style type="text/css">#toggle-sidebar {bottom: 80px}</style><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="Yuiko's Blog" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="/img/lala.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">8</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">5</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE%E5%88%9B%E5%BB%BASpark-DataFrame"><span class="toc-number">1.</span> <span class="toc-text">读取数据创建Spark DataFrame</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8Epython-list%E7%94%9F%E6%88%90"><span class="toc-number">1.1.</span> <span class="toc-text">从python list生成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8Epandas-df%E7%94%9F%E6%88%90"><span class="toc-number">1.2.</span> <span class="toc-text">从pandas df生成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8ERDD%E7%94%9F%E6%88%90"><span class="toc-number">1.3.</span> <span class="toc-text">从RDD生成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96csv%E6%96%87%E4%BB%B6"><span class="toc-number">1.4.</span> <span class="toc-text">读取csv文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96json%E6%96%87%E4%BB%B6"><span class="toc-number">1.5.</span> <span class="toc-text">读取json文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96parquet%E6%96%87%E4%BB%B6"><span class="toc-number">1.6.</span> <span class="toc-text">读取parquet文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8EMySQL-Hive%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96"><span class="toc-number">1.7.</span> <span class="toc-text">从MySQL&#x2F;Hive数据库读取</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98Spark-DataFrame%E6%95%B0%E6%8D%AE"><span class="toc-number">2.</span> <span class="toc-text">保存Spark DataFrame数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E4%B8%BAcsv%E6%96%87%E4%BB%B6"><span class="toc-number">2.1.</span> <span class="toc-text">保存为csv文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E4%B8%BAparquet%E6%96%87%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">保存为parquet文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%85%A5Hive%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">2.3.</span> <span class="toc-text">写入Hive数据库</span></a></li></ol></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://user-images.githubusercontent.com/18068963/97795439-11ae0000-1c41-11eb-9e35-fc72a797bfc4.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">Yuiko's Blog</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">pyspark学习之路（2）用spark读写DataFrame</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-11-01T02:32:43.000Z" title="发表于 2020-11-01 10:32:43">2020-11-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-11-01T05:13:07.131Z" title="更新于 2020-11-01 13:13:07">2020-11-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><p>&#160; &#160; &#160; &#160; 这一节主要讲Spark中创建和保存DataFrame的方法，当然万事的第一步当然是初始化我们的<code>SparkSession</code>类。</p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line">spark = SparkSession \</span><br><span class="line">    .builder \</span><br><span class="line">    .appName(<span class="string">&quot;Create and Save DataFrame&quot;</span>) \</span><br><span class="line">    .config(<span class="string">&quot;spark.some.config.option&quot;</span>, <span class="string">&quot;some-value&quot;</span>) \</span><br><span class="line">    .enableHiveSupport() \</span><br><span class="line">    .getOrCreate()</span><br></pre></td></tr></table></figure>
+<h1 id="读取数据创建Spark-DataFrame"><a href="#读取数据创建Spark-DataFrame" class="headerlink" title="读取数据创建Spark DataFrame"></a>读取数据创建Spark DataFrame</h1><p>&#160; &#160; &#160; &#160; <code>createDataFrame()</code>方法是最简单的创建DataFrame的方法，它可以通过读取python list, pandas df或是RDD这三种数据来创建DataFrame，其API如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pyspark.sql.createDataFrame(</span><br><span class="line">    data, schema=<span class="literal">None</span>, samplingRatio=<span class="literal">None</span>, verifySchema=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li><code>data</code>：Row、Column、list、dict等SQL数据表现形式的RDD，或者是python list，或者是pandas df</li>
+<li><code>schema</code>：用于指定DataFrame各列的数据类型，可以传入一个结构化类型实例<code>pyspark.sql.types.StructType</code>，或是一个列名组成的list</li>
+<li><code>samplingRatio</code>：推断类型时对行抽样的比例</li>
+<li><code>verifySchema</code>：是否对每一行校验符合schema与否，默认True</li>
+</ul>
+<p>&#160; &#160; &#160; &#160; 关于DataFrame的数据类型，需要注意的是：</p>
+<ol>
+<li>如果<code>schema</code>传入的是列名组成的list，则spark将自动根据<code>data</code>推断出每一列的数据类型；</li>
+<li>如果<code>schema</code>省略不写（默认是None），则spark会尝试从<code>data</code>自动推断每一列的列名和数据类型，但此时<code>data</code>必须是一个RDD</li>
+<li>如果<code>schema</code>是由<code>DataType</code>组成的结构化类型<code>StructType</code>，则其必须和真实数据完全一致，否则会抛出异常。</li>
+</ol>
+<h2 id="从python-list生成"><a href="#从python-list生成" class="headerlink" title="从python list生成"></a>从python list生成</h2><p>&#160; &#160; &#160; &#160; 向<code>data</code>参数传入一个一维的python list即可，<strong>list的长度就等于最后DataFrame的行数，而list的每一个元素则是一个p维的tuple，对应了DataFrame的每一行样本，p就是DataFrame的列数</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">data = [(<span class="number">123</span>, <span class="string">&#x27;Katie&#x27;</span>, <span class="number">19</span>, <span class="string">&#x27;brown&#x27;</span>),        <span class="comment"># 每个tuple长度为4，list长度为3，所以最后是一个3行4列的DataFrame</span></span><br><span class="line">        (<span class="number">234</span>, <span class="string">&#x27;Michael&#x27;</span>, <span class="number">22</span>, <span class="string">&#x27;green&#x27;</span>),</span><br><span class="line">        (<span class="number">345</span>, <span class="string">&#x27;Simone&#x27;</span>, <span class="number">23</span>, <span class="string">&#x27;blue&#x27;</span>)]</span><br><span class="line">rs = spark.createDataFrame(data, schema=[<span class="string">&#x27;Id&#x27;</span>, <span class="string">&#x27;Name&#x27;</span>, <span class="string">&#x27;Age&#x27;</span>, <span class="string">&#x27;Color&#x27;</span>])</span><br><span class="line">&gt;&gt; rs.show()    <span class="comment"># DataFrame的show方法会在控制台打印出DataFrame的前n行，默认n=20</span></span><br><span class="line">+---+---------+----+-----+</span><br><span class="line">| Id | Name   | Age|Color|</span><br><span class="line">+---+---------+---+------+</span><br><span class="line">|<span class="number">123</span> | Katie  | <span class="number">19</span> |brown|</span><br><span class="line">|<span class="number">234</span> | Michael| <span class="number">22</span> |green|</span><br><span class="line">|<span class="number">345</span> | Simone | <span class="number">23</span> |blue |</span><br><span class="line">+----+--------+----+-----+</span><br></pre></td></tr></table></figure>
+<h2 id="从pandas-df生成"><a href="#从pandas-df生成" class="headerlink" title="从pandas df生成"></a>从pandas df生成</h2><p>&#160; &#160; &#160; &#160; 从pandas df生成spark DataFrame非常简单，因为pandas df已经定义好了列名和数据类型，所以只需要将其传给<code>data</code>参数即可，不需要处理<code>schema</code>参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">colors = [<span class="string">&#x27;white&#x27;</span>,<span class="string">&#x27;green&#x27;</span>,<span class="string">&#x27;yellow&#x27;</span>,<span class="string">&#x27;red&#x27;</span>,<span class="string">&#x27;brown&#x27;</span>,<span class="string">&#x27;pink&#x27;</span>]</span><br><span class="line">df = pd.DataFrame(colors, columns=[<span class="string">&#x27;color&#x27;</span>])</span><br><span class="line">df[<span class="string">&#x27;length&#x27;</span>] = df[<span class="string">&#x27;color&#x27;</span>].apply(len)</span><br><span class="line">df = spark.createDataFrame(data=df)</span><br><span class="line">&gt;&gt; df.show(<span class="number">3</span>)</span><br><span class="line">+------+------+</span><br><span class="line">| color|length|</span><br><span class="line">+------+------+</span><br><span class="line">| white|     <span class="number">5</span>|</span><br><span class="line">| green|     <span class="number">5</span>|</span><br><span class="line">|yellow|     <span class="number">6</span>|</span><br><span class="line">+------+------+</span><br></pre></td></tr></table></figure>
+<h2 id="从RDD生成"><a href="#从RDD生成" class="headerlink" title="从RDD生成"></a>从RDD生成</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> StructType, StructField, LongType, StringType</span><br><span class="line">rdd= spark.sparkContext.parallelize([</span><br><span class="line">    (<span class="number">123</span>, <span class="string">&quot;Katie&quot;</span>, <span class="number">19</span>, <span class="string">&quot;brown&quot;</span>),</span><br><span class="line">    (<span class="number">234</span>, <span class="string">&quot;Michael&quot;</span>, <span class="number">22</span>, <span class="string">&quot;green&quot;</span>),</span><br><span class="line">    (<span class="number">345</span>, <span class="string">&quot;Simone&quot;</span>, <span class="number">23</span>, <span class="string">&quot;blue&quot;</span>)]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">schema = StructType([</span><br><span class="line">  StructField(<span class="string">&quot;id&quot;</span>, LongType(), <span class="literal">True</span>),          <span class="comment"># 列名&quot;id&quot;，类型Long，可以为NULL</span></span><br><span class="line">  StructField(<span class="string">&quot;name&quot;</span>, StringType(), <span class="literal">True</span>),      <span class="comment"># 列名&quot;name&quot;，类型String，可以为NULL</span></span><br><span class="line">  StructField(<span class="string">&quot;age&quot;</span>, LongType(), <span class="literal">True</span>),         <span class="comment"># 列名&quot;age&quot;，类型Long，可以为NULL</span></span><br><span class="line">  StructField(<span class="string">&quot;eyeColor&quot;</span>, StringType(), <span class="literal">True</span>)   <span class="comment"># 列名&quot;eyeColor&quot;，类型String，可以为NULL</span></span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">df2 = spark.createDataFrame(data=rdd, schema=schema)</span><br><span class="line">&gt;&gt; df2.show()</span><br><span class="line">+---+---------+----+-----+</span><br><span class="line">| Id | Name   | Age|Color|</span><br><span class="line">+---+---------+---+------+</span><br><span class="line">|<span class="number">123</span> | Katie  | <span class="number">19</span> |brown|</span><br><span class="line">|<span class="number">234</span> | Michael| <span class="number">22</span> |green|</span><br><span class="line">|<span class="number">345</span> | Simone | <span class="number">23</span> |blue |</span><br><span class="line">+----+--------+----+-----+</span><br></pre></td></tr></table></figure>
+<p>&#160; &#160; &#160; &#160; 上面的代码还特别展示了如何向<code>schema</code>参数传入一个结构化类型实例：<code>pyspark.sql.types.StructType</code>类的实例化需要传入一个list，<strong>list中的每个元素则是<code>pyspark.sql.types.StructField</code>类的一个实例，指明了DataFrame中每一列的列名、数据类型、是否可以是NULL等schema</strong>。<code>pyspark.sql.types.StructField</code>类的实例化方法如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyspark.sql.types.StructField(name, dataType, nullable=<span class="literal">True</span>, meatdata=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li><code>name</code>：字符串，表示该列的列名``</li>
+<li><code>dataType</code>：该列的数据类型，需要是<code>pyspark.sql.types.DataType</code>类的实例，比如<code>dataType=StringType()</code>就表示这一列是string类型</li>
+<li><code>nullable</code>：该列是否可以为NULL</li>
+</ul>
+<p>&#160; &#160; &#160; &#160; 对照着看上面的代码，schema变量就是一个<code>StructType</code>类实例，其参数是一个长度为4的列表，说明一共有4列，每一个元素都是一个<code>StructField</code>类实例，指明了这一列的列名、数据类型和NULL与否。</p>
+<p>&#160; &#160; &#160; &#160; 除了<code>createDataFrame()</code>方法以外，<strong><code>SparkSession</code>类还有一个<code>read</code>属性，它返回的是一个<code>pyspark.sql.DataFrameReader</code>类，而这个类下有很多读取外部格式化文本文件转化为DataFrame的method方法，比如csv，json，jdbc等等</strong>：</p>
+<h2 id="读取csv文件"><a href="#读取csv文件" class="headerlink" title="读取csv文件"></a>读取csv文件</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 通过spark.read来访问DataFrameReader类</span></span><br><span class="line">spark.read.csv(path, schema=<span class="literal">None</span>, sep=<span class="literal">None</span>, encoding=<span class="literal">None</span>, quote=<span class="literal">None</span>, escape=<span class="literal">None</span>, comment=<span class="literal">None</span>, header=<span class="literal">None</span>, </span><br><span class="line">    inferSchema=<span class="literal">None</span>, ignoreLeadingWhiteSpace=<span class="literal">None</span>, ignoreTrailingWhiteSpace=<span class="literal">None</span>, nullValue=<span class="literal">None</span>, </span><br><span class="line">    nanValue=<span class="literal">None</span>, positiveInf=<span class="literal">None</span>, negativeInf=<span class="literal">None</span>, dateFormat=<span class="literal">None</span>, timestampFormat=<span class="literal">None</span>, maxColumns=<span class="literal">None</span>, </span><br><span class="line">    maxCharsPerColumn=<span class="literal">None</span>, maxMalformedLogPerPartition=<span class="literal">None</span>, mode=<span class="literal">None</span>, columnNameOfCorruptRecord=<span class="literal">None</span>, </span><br><span class="line">    multiLine=<span class="literal">None</span>, charToEscapeQuoteEscaping=<span class="literal">None</span>, samplingRatio=<span class="literal">None</span>, enforceSchema=<span class="literal">None</span>, emptyValue=<span class="literal">None</span>, </span><br><span class="line">    locale=<span class="literal">None</span>, lineSep=<span class="literal">None</span>, pathGlobFilter=<span class="literal">None</span>, recursiveFileLookup=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>常用参数：</p>
+<ul>
+<li><code>path</code>：存储csv文件的路径</li>
+<li><code>schema</code>：指明列数据类型。可以是<code>StructType</code>类实例，也可以是一个DDL形式的string（如”col0 INT, col1 DOUBLE”）</li>
+<li><code>sep</code>：列与列之间的分隔符，默认是英文逗号’,’</li>
+<li><code>encoding</code>：默认是UTF-8编码</li>
+<li><code>quote</code>：引用字符，其后面出现的值里可以包含有分隔符而不被分隔，默认是英文双引号’”‘</li>
+<li><code>escape</code>：逃逸字符，默认’\’</li>
+<li><code>comment</code>：注释字符，在这个字符后出现的文本将会被无视</li>
+<li><code>header</code>：是否将第一行作为列名</li>
+<li><code>inferSchema</code>：是否自动根据数据推测schema</li>
+<li><code>maxColumns</code>：强制设定最多引入多少列</li>
+</ul>
+<h2 id="读取json文件"><a href="#读取json文件" class="headerlink" title="读取json文件"></a>读取json文件</h2><p>&#160; &#160; &#160; &#160; 基本上和读取csv文件类似，用<code>spark.read.json(path=file)</code>即可，一般不设置别的参数。具体可详见官方PI文档。</p>
+<h2 id="读取parquet文件"><a href="#读取parquet文件" class="headerlink" title="读取parquet文件"></a>读取parquet文件</h2><p>&#160; &#160; &#160; &#160; 同上，用<code>spark.read.parquet(path)</code>即可。</p>
+<h2 id="从MySQL-Hive数据库读取"><a href="#从MySQL-Hive数据库读取" class="headerlink" title="从MySQL/Hive数据库读取"></a>从MySQL/Hive数据库读取</h2><p>&#160; &#160; &#160; &#160; 如果在初始化<code>SparkSession</code>类的时候，已经启动了对Hive的支持的话（<code>enableHiveSupport()</code>），可以直接用下面的方式读取Hive数据库：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df = spark.sql(<span class="string">&quot;select * from hive_tb_name&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>&#160; &#160; &#160; &#160; 而对于MySQl数据库，则需要用<code>pyspark.sql.DataFrameReader</code>类的<code>jdbc</code>方法，由于MySQL我用的很少，这里不再赘述。。</p>
+<h1 id="保存Spark-DataFrame数据"><a href="#保存Spark-DataFrame数据" class="headerlink" title="保存Spark DataFrame数据"></a>保存Spark DataFrame数据</h1><p>&#160; &#160; &#160; &#160; 根据上面任意一种方式所创建的DataFrame，都是<code>pyspark.sql.DataFrame</code>类的一个实例，<code>pyspark.sql.DataFrame</code>类下有一个<code>write</code>属性，和之前的<code>read</code>属性类似，<code>write</code>属性返回的是一个<code>pyspark.sql.DataFrameWriter</code>类，而这个类下提供了多种将Spark DataFrame保存到外部存储（文件系统、键值存储等）的method方法。</p>
+<h2 id="保存为csv文件"><a href="#保存为csv文件" class="headerlink" title="保存为csv文件"></a>保存为csv文件</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 通过df.write来访问DataFrameReader类</span></span><br><span class="line">df.write.csv(path, mode=<span class="literal">None</span>, compression=<span class="literal">None</span>, sep=<span class="literal">None</span>, quote=<span class="literal">None</span>, escape=<span class="literal">None</span>, header=<span class="literal">None</span>, nullValue=<span class="literal">None</span>,</span><br><span class="line">    escapeQuotes=<span class="literal">None</span>, quoteAll=<span class="literal">None</span>, dateFormat=<span class="literal">None</span>, timestampFormat=<span class="literal">None</span>, ignoreLeadingWhiteSpace=<span class="literal">None</span>, </span><br><span class="line">    ignoreTrailingWhiteSpace=<span class="literal">None</span>, charToEscapeQuoteEscaping=<span class="literal">None</span>, encoding=<span class="literal">None</span>, emptyValue=<span class="literal">None</span>, lineSep=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>常用参数：</p>
+<ul>
+<li><code>path</code>：任何Hadoop支持的文件系统路径</li>
+<li><code>mode</code>：当目标文件已有数据时的写入方式，主要有：<ul>
+<li><code>mode=&quot;append&quot;</code>：追加写入</li>
+<li><code>mode=&quot;overwrite&quot;</code>：覆盖写入</li>
+<li><code>mode=&quot;ignore&quot;</code>：无事发生</li>
+<li><code>mode=&quot;error&quot;</code>：抛出一个错</li>
+</ul>
+</li>
+<li><code>header</code>：是否将列名作为首行写入</li>
+</ul>
+<h2 id="保存为parquet文件"><a href="#保存为parquet文件" class="headerlink" title="保存为parquet文件"></a>保存为parquet文件</h2><p>&#160; &#160; &#160; &#160; 同上，用<code>df.write.parquet(path,mode)</code>即可。</p>
+<h2 id="写入Hive数据库"><a href="#写入Hive数据库" class="headerlink" title="写入Hive数据库"></a>写入Hive数据库</h2></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Yuiko Teng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://tqd9563.github.io/2020/11/01/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF%EF%BC%882%EF%BC%89spark%E8%AF%BB%E5%86%99DataFrame/">https://tqd9563.github.io/2020/11/01/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF%EF%BC%882%EF%BC%89spark%E8%AF%BB%E5%86%99DataFrame/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://tqd9563.github.io" target="_blank">Yuiko's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pyspark/">pyspark</a></div><div class="post_share"><div class="social-share" data-image="https://user-images.githubusercontent.com/18068963/97795439-11ae0000-1c41-11eb-9e35-fc72a797bfc4.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/11/01/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF%EF%BC%883%EF%BC%89DataFrame%E5%9F%BA%E6%9C%AC%E5%A4%84%E7%90%86/"><img class="prev-cover" data-lazy-src="https://user-images.githubusercontent.com/18068963/97797016-2b0c7780-1c54-11eb-9e8a-8f915d17dcec.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">pyspark学习之路（3）DataFrame基本数据处理</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/31/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF%EF%BC%881%EF%BC%89%E5%88%9D%E8%AF%86pyspark%E5%8F%8Aspark-sql%E6%A8%A1%E5%9D%97/"><img class="next-cover" data-lazy-src="https://user-images.githubusercontent.com/18068963/97793955-23d27300-1c2e-11eb-962b-fa12085dafe5.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">pyspark学习之路（1）初识pyspark及spark sql模块</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/10/31/pyspark学习之路（1）初识pyspark及spark-sql模块/" title="pyspark学习之路（1）初识pyspark及spark sql模块"><img class="relatedPosts_cover" data-lazy-src="https://user-images.githubusercontent.com/18068963/97793955-23d27300-1c2e-11eb-962b-fa12085dafe5.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-31</div><div class="relatedPosts_title">pyspark学习之路（1）初识pyspark及spark sql模块</div></div></a></div><div class="relatedPosts_item"><a href="/2020/11/01/pyspark学习之路（3）DataFrame基本处理/" title="pyspark学习之路（3）DataFrame基本数据处理"><img class="relatedPosts_cover" data-lazy-src="https://user-images.githubusercontent.com/18068963/97797016-2b0c7780-1c54-11eb-9e8a-8f915d17dcec.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-01</div><div class="relatedPosts_title">pyspark学习之路（3）DataFrame基本数据处理</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By Yuiko Teng</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">只是一个用来记些笔记的小站</div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    loader: {
+      source: {
+        '[tex]/amsCd': '[tex]/amscd'
+      }
+    },
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  var script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><div class="aplayer no-destroy" data-id="5195373284" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="true" muted></div><script src="/js/third-party/ClickShowText.js" async="async"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: [
+    'title',
+    'meta[name=description]',
+    '#config_change',
+    '#body-wrap',
+    '#rightside-config-hide',
+    '#rightside-config-show',
+    '.js-pjax'
+  ],
+  cacheBust: false,
+})
+
+document.addEventListener('pjax:complete', function () {
+  refreshFn()
+
+  $('script[data-pjax]').each(function () {
+    $(this).parent().append($(this).remove())
+  })
+
+  GLOBAL_CONFIG.islazyload && lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  if (typeof gtag === 'function') {
+    gtag('config', 'UA-176079148-1', {'page_path': window.location.pathname});
+  }
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+})
+
+document.addEventListener('pjax:send', function () {
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  $(window).off('scroll')
+
+  //reset readmode
+  $('body').hasClass('read-mode') && $('body').removeClass('read-mode')
+
+  //reset font-size
+  $('body').css('font-size') !== originFontSize && $('body').css('font-size', parseFloat(originFontSize))
+})</script></div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({{ JSON.stringify(config) }});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="{{ src }}">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
