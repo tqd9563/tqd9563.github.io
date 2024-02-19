@@ -60,7 +60,7 @@ git submodule add git@github.com:dillonzq/LoveIt.git themes/LoveIt
 ```
 cd ~/blog/public
 git init
-git remote add origin git@github.com:tqd9563/tqd9563.github.io.git
+git remote add git@github.com:tqd9563/tqd9563.github.io.git
 ```
 
 然后就是常规的git add, commit, push流程：
