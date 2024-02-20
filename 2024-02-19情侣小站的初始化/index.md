@@ -83,4 +83,4 @@ git pull origin main --allow-unrelated-histories
 解决的方法是把CNAME文件放在`/static`目录下，hugo会将`/static`目录下的全部内容拷贝到`/public`下，这样就不会404了~
 
 
-{{< music server="netease" type="playlist" id="5195373284" autoplay=true order=random list-folded=false fixed=true >}}
+{{< music server="netease" type="playlist" id="5195373284" autoplay=true order=random list-folded=true fixed=true >}}
