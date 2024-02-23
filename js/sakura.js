@@ -11,10 +11,11 @@ function Sakura(x, y, s, r, fn) {
 }
 Sakura.prototype.draw = function (cxt) {
     cxt.save();
-    var xc = 40 * this.s / 4;
+    var scale = 0.5; // 缩放参数
+    var imgSize = 40 * this.s * scale;
     cxt.translate(this.x, this.y);
     cxt.rotate(this.r);
-    cxt.drawImage(img, 0, 0, 40 * this.s, 40 * this.s)
+    cxt.drawImage(img, 0, 0, imgSize, imgSize); // 应用缩放
     cxt.restore();
 }
 Sakura.prototype.update = function () {
@@ -108,7 +109,9 @@ function startSakura() {
     document.getElementsByTagName('body')[0].appendChild(canvas);
     cxt = canvas.getContext('2d');
     var sakuraList = new SakuraList();
-    for (var i = 0; i < 50; i++) {
+    // NOTE: 循环的次数决定了樱花的密度
+    var density = 50;
+    for (var i = 0; i < density; i++) {
         var sakura, randomX, randomY, randomS, randomR, randomFnx, randomFny;
         randomX = getRandom('x');
         randomY = getRandom('y');
