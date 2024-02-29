@@ -1,4 +1,4 @@
-# 情侣小站搭建全过程
+# 情侣小站的搭建之路
 
 
 <!--more-->
@@ -81,6 +81,9 @@ git pull origin main --allow-unrelated-histories
 有的时候会出现一个问题：当我们的博客内容发生更新，走了一遍git push的流程后，发现网站404了。这个时候检查一下我们的Github Pages的域名解析是否正确，可能的原因是CNAME文件消失了。这是因为Hugo 在构建站点时，默认会删除 public 文件夹中的所有内容，并重新生成站点的文件。这意味着任何直接放在 public 文件夹中的文件，如 CNAME 文件，在 Hugo 重新构建站点时都会被删除。
 
 解决的方法是把CNAME文件放在`/static`目录下，hugo会将`/static`目录下的全部内容拷贝到`/public`下，这样就不会404了~
+
+# 主题美化
+每个人的审美毕竟还是不同的，因此安装了原生主题之后，还有漫漫长的美化装修过程，这部分可以移步下一篇文章：「主题增强美化」，里面会详细的记录对原生主题所做的各种“装修工作”。
 
 
 {{< music server="netease" type="playlist" id="5195373284" autoplay=true order=random list-folded=true fixed=true >}}
