@@ -156,6 +156,15 @@ LoveIt主题默认的菜单栏是只有文字没有图标的，但是Hugo提供�
 之后只要在需要轮播图片的markdown里，引用我们的shortcodes模板即可，引用方式如下：
 !["shortcodes引用"](carousel.png "shortcodes引用")
 
+## 按content type定制食谱文章模板
+因为这个小站主要是记录我和XX两个人的生活的，其中会有很多文章是记录料理菜谱的，这些文章的格式比较统一，且和普通文章不太一样，因此希望可以抽象成一个通用的模板。Hugo提供了`Archetypes`这种为新内容文件设置的预制模板的功能，它定义了当用户使用`hugo new`命令创建新内容时，markdown文件的front matter里需要包含哪些内容。不同的content type可以对应不同的模板。
+
+每个content type对应了`content/`下的一个目录，例如默认的`posts`类型，就是对应了`content/posts/`下的所有文件。假如我们要新增一个食谱类型文章的模板，对应的content type叫做"receipes"，那么就需要以下两步操作：
+1. 新建食谱类型文章对应的预制模板文件：`/archetypes/receipes.md`
+2. 后续新建食谱类型的文章时，需要用命令`hugo new receipes/article_title.md`，而不是`hugo new posts/article_title.md`
+
+这样我们的文章就会按照`/archetypes/receipes.md`定义的模板来创建了。
+
 
 
 ## 参考资料
