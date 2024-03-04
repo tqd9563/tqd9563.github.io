@@ -71,7 +71,7 @@ $global-link-color: #6e8ac5 !default; // 超链接文本颜色, 例如主页文�
 $global-link-hover-color: #255fdb !default; // 超链接光标悬浮上去时的颜色, 深蓝色
 $header-background-color: rgba(0, 0, 0, 0.01) !default; // 导航栏颜色, 透明
 $single-link-color: #df8994 !default; // 单一超链接文本颜色, 浅粉红色
-$code-background-color: #31392c !default; // 代码区域背景色, 深灰色
+$code-background-color: #21241f !default; // 代码区域背景色, 深灰色
 ```
 
 需要注意的是，同样因为是自定义的css样式，所以需要新建一个文件`~/blog/assets/css/_variables.scss`来覆盖原有主题自带的样式。
@@ -88,6 +88,74 @@ LoveIt主题默认的菜单栏是只有文字没有图标的，但是Hugo提供�
 我们想要给菜单栏文字前面加上图标，只需要修改`pre`属性即可，我们选择的是使用[fontawesome](https://fontawesome.com/icons)这个非常流行的图标字体库，里面提供了非常非常丰富的网页图标，只需要复制HTML代码，赋给`pre`即可，例如：`pre = "<i class='fa-solid fa-paperclip'></i>"`
 最后的实际效果如下：
 !["菜单栏图标"](menu-icon.jpeg "菜单栏图标")
+
+## 文章内图片轮播
+### slick.js插件
+市面上有很多现成的轮子可以用，鉴于我也没啥基础，要求也不高，就随便选了一个比较热门的slick.js，这是一款基于jQuery的插件，可以非常方便地构建漂亮的响应式图片轮播。官方网站还提供了一个[入门使用手册](https://kenwheeler.github.io/slick/)，对着抄基本就可以了。
+
+要使用slick.js，首先需要配置加载一些必要的资源如cdn，js等，如下（这里需要注意slick.js需要在jQuery之后加载，且要求jQuery的版本大于1.7）：
+```html
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+```
+
+假设我们有三张图片需要轮播，那么首先定义一个HTML容器用来装这些图片（**这里的图片路径是相对路径，图片应当和内容文件处在同一层级目录下**）：
+```html
+<div class="img-carousel">
+  <div><img src="./img-name1.jpg"></div>
+  <div><img src="./img-name2.jpg"></div>
+  <div><img src="./img-name3.jpg"></div>
+</div>
+```
+
+然后添加下面的JS代码就可以实现轮播了（这里`$(document).ready()`的含义是声明了一个函数，当整个DOM完全加载后自动开始执行）
+```js
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.img-carousel').slick({
+            autoplay: true, // 是否自动播放
+            autoplaySpeed: 2000,  // 播放速度，数字越大速度越慢
+        });
+    })
+</script>
+```
+
+### Shortcodes模板
+如果每次图片轮播，都需要写上面那么多的HTML+JS代码，就显得过于笨重了，而且还会使得我们的markdown文件不够简洁，我们的markdown内容文件的重心应该放在内容上。幸而Hugo提供了一个特性叫Shortcodes，它可以让我们在内容文件（markdown）里引用一些内置的或是自定义的模板。这样做就可以保证markdown文件足够的整洁，除了一些内置的shortcodes外，还支持开发者自定义shortcodes模板。
+
+因此开工把上述的代码逻辑封装成一个shortcodes模板。首先新建一个目录`~/blog/layouts/shortcodes`，并在这个目录下新建一个html文件`/shortcodes/carousel.html`。在模板文件中，我们先把需要加载的cdn、js、css资源都放在开头。接着就是组织我们的核心代码。考虑到轮播的图片数量是不确定，应当通过一个参数传递给模板。Hugo的shortcodes模板支持参数传递，但是好像不支持数组类型的传递，因此只能将图片路径用一个字符串传递，不同的路径之间用逗号分隔开，例如`imgs="./img1.jpg, ./img2.jpg"`。然后在模板内部解析参数，获取到图片列表后，循环生成对应的div容器即可。完整的模板代码如下：
+
+```html
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+
+{{ $imgs := .Get "imgs" }}
+{{ $items := split $imgs "," }}
+<div class="autoplay">
+    {{ range $items }}
+        <!-- 去除空白符 -->
+        {{ $trimmed_src := trim . " " }}
+        <div><img src="{{ $trimmed_src }}"></div>
+    {{ end }}
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.autoplay').slick({
+            autoplay: true,
+            autoplaySpeed: 2000,
+        });
+    })
+</script>
+```
+
+之后只要在需要轮播图片的markdown里，引用我们的shortcodes模板即可，引用方式如下：
+!["shortcodes引用"](carousel.png "shortcodes引用")
+
 
 
 ## 参考资料
