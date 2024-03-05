@@ -33,7 +33,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/www.qqxx.love\/2024-02-23%E5%B0%8F%E7%AA%9D%E8%A3%85%E4%BF%AE%E4%B9%8B%E8%B7%AF\/"
-        },"image": ["https:\/\/www.qqxx.love\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  4519 ,
+        },"image": ["https:\/\/www.qqxx.love\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  4883 ,
         "url": "https:\/\/www.qqxx.love\/2024-02-23%E5%B0%8F%E7%AA%9D%E8%A3%85%E4%BF%AE%E4%B9%8B%E8%B7%AF\/","datePublished": "2024-02-23T16:32:33+08:00","dateModified": "2024-02-23T16:32:33+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
@@ -131,7 +131,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">小窝装修之路</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>YuikoTeng</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-02-23">2024-02-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4519 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-02-23">2024-02-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4883 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 10 分钟&nbsp;<span id="/2024-02-23%E5%B0%8F%E7%AA%9D%E8%A3%85%E4%BF%AE%E4%B9%8B%E8%B7%AF/" class="leancloud_visitors" data-flag-title="小窝装修之路">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -159,6 +159,7 @@
       </ul>
     </li>
     <li><a href="#按content-type定制食谱文章模板">按content type定制食谱文章模板</a></li>
+    <li><a href="#字体美化">字体美化</a></li>
     <li><a href="#参考资料">参考资料</a></li>
   </ul>
 </nav></div>
@@ -435,6 +436,44 @@
 <li>后续新建食谱类型的文章时，需要用命令<code>hugo new receipes/article_title.md</code>，而不是<code>hugo new posts/article_title.md</code></li>
 </ol>
 <p>这样我们的文章就会按照<code>/archetypes/receipes.md</code>定义的模板来创建了。</p>
+<h2 id="字体美化">字体美化</h2>
+<p>主题自带的字体看久了着实有点丑。。于是想着去网上找一个美美的字体替换一下。在<a href="https://www.fonts.net.cn/" target="_blank" rel="noopener noreffer ">字体天下</a>找了一会，找到了一款叫「也字工厂瑞云浓楷书
+」的，效果还不错，就决定是你了皮卡丘！更换字体的步骤找gpt学了一下，也挺简单的，就几个步骤：</p>
+<ol>
+<li>新建<code>/static/fonts</code>目录，把下载到本地的<code>.ttf</code>字体文件放在这个目录下</li>
+<li>添加 @font-face 规则到您CSS。在我们的<code>_variables.scss</code>文件中，需要修改@font-face规则，指定font-family为我们刚才下载的字体:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="p">@</span><span class="k">font-face</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">font-family</span><span class="o">:</span> <span class="s2">&#34;YeZiGongChangRuiYunNongKaiShu-2&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">src</span><span class="o">:</span> <span class="nt">url</span><span class="o">(</span><span class="s1">&#39;/fonts/YeZiGongChangRuiYunNongKaiShu-2.ttf&#39;</span><span class="o">)</span> <span class="nt">format</span><span class="o">(</span><span class="s1">&#39;truetype&#39;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">font-weight</span><span class="o">:</span> <span class="nt">300</span><span class="o">;</span>   <span class="o">//</span> <span class="nt">300会比正常偏细一些</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">font-style</span><span class="o">:</span> <span class="nt">normal</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>最后修改<code>_variables.scss</code>文件中的<code>$global-font-family</code>变量即可生效：<code>$global-font-family: &quot;YeZiGongChangRuiYunNongKaiShu-2&quot;</code></li>
+</ol>
+<p><figure><a class="lightgallery" href="./font-preview.png" title="&amp;ldquo;字体效果&amp;rdquo;" data-thumbnail="./font-preview.png" data-sub-html="<h2>字体效果</h2><p>&amp;ldquo;字体效果&amp;rdquo;</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="./font-preview.png"
+            data-srcset="./font-preview.png, ./font-preview.png 1.5x, ./font-preview.png 2x"
+            data-sizes="auto"
+            alt="./font-preview.png" />
+    </a><figcaption class="image-caption">字体效果</figcaption>
+    </figure></p>
 <h2 id="参考资料">参考资料</h2>
 <blockquote>
 <ul>
