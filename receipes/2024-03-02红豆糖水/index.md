@@ -5,6 +5,8 @@
 
 <!--more-->
 
+!["红豆糖水"](./hongdou.jpeg "红豆糖水")
+
 ## 原料准备
 {{< admonition abstract " " >}}
 - 红豆约120ml

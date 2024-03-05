@@ -5,6 +5,8 @@
 
 <!--more-->
 
+![](xiaomizhou.jpeg "小米粥")
+
 ## 原料准备
 {{< admonition abstract " " >}}
 - 小米约30ml，大米约10ml，加在一起40ml（用家里盛米的杯子）
