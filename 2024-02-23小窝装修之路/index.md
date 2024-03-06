@@ -156,7 +156,7 @@ LoveIt主题默认的菜单栏是只有文字没有图标的，但是Hugo提供�
 之后只要在需要轮播图片的markdown里，引用我们的shortcodes模板即可，引用方式如下：
 !["shortcodes引用"](carousel.png "shortcodes引用")
 
-## 按content type定制食谱文章模板
+## 按content type定制文章模板
 因为这个小站主要是记录我和XX两个人的生活的，其中会有很多文章是记录料理菜谱的，这些文章的格式比较统一，且和普通文章不太一样，因此希望可以抽象成一个通用的模板。Hugo提供了`Archetypes`这种为新内容文件设置的预制模板的功能，它定义了当用户使用`hugo new`命令创建新内容时，markdown文件的front matter里需要包含哪些内容。不同的content type可以对应不同的模板。
 
 每个content type对应了`content/`下的一个目录，例如默认的`posts`类型，就是对应了`content/posts/`下的所有文件。假如我们要新增一个食谱类型文章的模板，对应的content type叫做"receipes"，那么就需要以下两步操作：
@@ -182,6 +182,70 @@ LoveIt主题默认的菜单栏是只有文字没有图标的，但是Hugo提供�
 3. 最后修改`_variables.scss`文件中的`$global-font-family`变量即可生效：`$global-font-family: "YeZiGongChangRuiYunNongKaiShu-2"`
 
 !["字体效果"](./font-preview.png "字体效果")
+
+## 打字机动画效果
+LoveIt主题原生基于typeit插件实现了打字机效果，但是好像只能正着打一遍，没办法实现打完后删除重复打字的效果。。研究了半天他的代码也看不太懂。。于是乎只能自给自足，自己写js来实现了。新建一个`/static/js/typewriter.js`，代码如下：
+```js
+let divTyping = document.getElementById('subtitle')
+let i = 0, timer = 0
+let isAdding = true // 设置一个开关变量，用来控制是添加文字还是删除文字
+
+let arr = [
+    '全心全意为全心服务.', 
+    '上辈子拯救了银河系，这辈子才能遇见你', 
+    '一饮一啄，莫非前定'
+]
+
+function getRandomElement(arr) {
+    if (arr && arr.length) {
+        const index = Math.floor(Math.random() * arr.length);
+        return arr[index];
+    }
+    return null; // 如果数组为空或未定义，则返回null
+}
+
+let str = getRandomElement(arr)
+function typing () {
+    if (i <= str.length && isAdding) {
+        // 打字阶段
+        divTyping.innerHTML = str.slice(0, i++) + '|'
+        timer = setTimeout(typing, 100) // 200可以自己调整打字速度
+    } else if (i > 0 && !isAdding) {
+        // 删除阶段
+        i--
+        divTyping.innerHTML = str.slice(0, i) + '|'
+        timer = setTimeout(typing, 70) // 100可以自己调整删除速度
+    } else {
+        // 完成打字或者删除后的下一步动作
+        console.log('切换前:', isAdding)
+        isAdding = !isAdding // 切换状态
+        console.log('切换后:', isAdding)
+        setTimeout(typing, 1800) // 停顿一会儿后再次打字或者删除
+        if (isAdding) {
+            // 切换为打字模式, 重新随机选择字符串
+            str = getRandomElement(arr) // 在if语句块内部不能用const或者let，否则生成的是新的局部变量，无法影响外部使用的str
+        }
+    }
+}
+
+typing()
+```
+
+即使没有js基础，跟着gpt动手也可以弄个七七八八出来了。这里我还设置了一个array，用于在每次删除完后重新随机选择一个句子打印。
+
+写好js之后，只需要和之前的樱花特效一样，在`/layouts/partials/assets.html`文件的末尾，加上一句`<script type="text/javascript" src="/js/typewriter.js"></script>`即可。最后为了覆盖原有主题的动画效果，找到对应的代码在`/layouts/partials/home/profile.html`的第43行前后，作以下的修改即可：
+
+```html
+<div class="home-subtitle">
+    <!-- 取消typeit动画 -->
+    <!-- {{- $id := dict "Content" . "Scratch" $.Scratch | partial "function/id.html" -}} -->
+    <!-- <div id="{{ $id }}" class="typeit"></div> -->
+    <!-- {{- . | safeHTML -}} -->
+    <!-- 这里的div的id要和你的javascript文件里取的那个id一致 -->
+    <div id="subtitle" class="typeit"></div>
+</div>
+```
+
 
 ## 参考资料
 > - [Hugo 的 LoveIt 主题修改及增强](https://zhuanlan.zhihu.com/p/646556566)
