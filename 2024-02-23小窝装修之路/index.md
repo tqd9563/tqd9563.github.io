@@ -246,6 +246,52 @@ typing()
 </div>
 ```
 
+## 首页banner图
+之前在用Hexo的时候用的是Butterfly主题，那个时候最为惊叹的就是主页那个超大的高清Banner图，给人很强的震撼感觉~现在使用的主题没有自带banner，所以得自己整一个。
+
+由于之前已经改了网站的背景，用的是偏纸质纹理的背景，整体上的颜色偏一点棕黄，因此banner图的选择也是一个难点。考虑到沙漠的配色和这个比较搭，因此翻了一下去年年底去宁夏玩的时候拍的照片，最后选定现在这张在沙漠里刻了我和XX的名字的照片作为我们的banner！修改的步骤大概分为下面几步：
+1. 将图片添加到站点目录`/static/images/banner.jpeg`
+2. 设置css样式：
+```scss
+#header-desktop {
+    // 注意这里的路径是以 / 开头的，这意味着它是相对于站点根目录的路径。
+    // 由于Hugo 会把 /static 目录下的内容复制到站点根目录下
+    // 所以 /images/banner.jpg 实际上对应于 /static/images/banner.jpg。
+    background-image: url('/images/banner.jpeg');
+    background-size: cover;
+    opacity: 0.5;   // 这里稍稍调整了一下图片的透明度
+}
+```
+3. 主题的`<header>`元素高度是由变量`$header-height`控制的，默认取值是3.5rem，我们要做banner的话需要把这个值扩大，经过调整后的取值是40rem
+4. header变高后，发现右上角菜单栏变成了居中显示，很丑。。希望可以把菜单栏靠近header的顶部显示。打开chrome开发者工具后发现，原因出在header的`line-height`属性的取值居然也是跟着变量`$header-height`走的，如果这个值大了，行高就会变高。那带来的效果就是菜单栏居中显示了。只要把行高缩小，我们的问题就可以解决。因此新建了一个变量`$header-line-height=5rem`，并且修改`_header.scss`文件：`line-height: var(--header-line-height);`即可
+5. 鼠标滚轮向下滑动时，发现banner图会一起向下滑。。经过上网搜索发现原因是header的position属性被设置成了fixed，解决方法就是注释掉这行。但是我尝试在`_custom.scss`文件里修改这个样式，发现并没有生效（不知道为什么），所以最后只能直接修改原文件`_header.scss`，将`position: fixed;`这行注释掉
+6. 主页的头像距离banner图底部的距离有点远，修改`profile.html`，添加行内样式：`<div class="home-profile" style="padding-top: 0;">`后解决
+7. 理论上这个banner应该只出现在首页，但是现在即使点进某一篇具体的文章，还是会有这个banner存在，观看体验不佳，且会造成一些奇怪的问题，比如目录会浮动到屏幕的中下方。。解决方法就是判断一下当前页面是否是首页，给header元素一个不同的class值，然后只对首页的那个class取值定义带背景的css样式。具体的修改如下:
+
+`_header.html` ：
+```html
+<!-- 对首页赋予一个不同的class -->
+{{ if .IsHome }}
+    <header class="desktop-home-header" id="header-desktop">
+{{ else }}
+    <header class="desktop-not-home-header" id="header-desktop">
+{{ end }}
+```
+
+`_custom.scss` ：
+```scss
+// 改用class而非之前的id
+.desktop-home-header {
+    // 注意这里的路径是以 / 开头的，这意味着它是相对于站点根目录的路径。
+    // 由于Hugo 会把 /static 目录下的内容复制到站点根目录下
+    // 所以 /images/banner.jpg 实际上对应于 /static/images/banner.jpg。
+    background-image: url('/images/banner.jpeg');
+    background-size: cover;
+    opacity: 0.5;   // 这里稍稍调整了一下图片的透明度
+}
+```
+8. 尚存问题：添加首页的banner后，之前首页的菜单栏字体变的可读性较差了。。这个只能日后再说了
+
 
 ## 参考资料
 > - [Hugo 的 LoveIt 主题修改及增强](https://zhuanlan.zhihu.com/p/646556566)
