@@ -64,4 +64,6 @@
 ## 后记
 愉快的三天小长假结束了，果然做四休三才是真正的王道！！什么时候我也能找到做四休三的工作呀
 
+后记的后记：第二天甘蔗果然坏掉了，呜呜呜呜，下次一定要直接吃完！
+
 {{< music server="netease" type="playlist" id="5195373284" autoplay=true order=random list-folded=true fixed=true >}}
