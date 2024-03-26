@@ -32,6 +32,6 @@
 
 忙完都凌晨一点了，发个pyq装了一下b之后，就赶紧睡觉了，明天还要搬砖呢。。
 
-{{<carousel imgs="./ice_2.jpg, ./hezhao.jpg">}}
+{{<carousel imgs="./ice_2.jpg, ./hezhao.jpg, ./magic.jpeg, ./gaoju.jpeg">}}
 
 {{< music server="netease" type="playlist" id="5195373284" autoplay=true order=random list-folded=true fixed=true >}}
