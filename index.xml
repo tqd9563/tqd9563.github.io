@@ -3,9 +3,17 @@
         <title>QQ和XX的小窝</title>
         <link>https://www.qqxx.love/</link>
         <description>Hugo theme - LoveIt</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 26 Mar 2024 18:01:37 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 31 Mar 2024 22:46:05 &#43;0800</lastBuildDate>
             <atom:link href="https://www.qqxx.love/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>赏樱花</title>
+    <link>https://www.qqxx.love/2024-03-31%E8%B5%8F%E6%A8%B1%E8%8A%B1/</link>
+    <pubDate>Sun, 31 Mar 2024 22:46:05 &#43;0800</pubDate>
+    <author>YuikoTeng</author>
+    <guid>https://www.qqxx.love/2024-03-31%E8%B5%8F%E6%A8%B1%E8%8A%B1/</guid>
+    <description><![CDATA[宝山之行 前些天老婆在咸鱼上给爸爸买了个无人机，约了今天线下面交，不过地点在宝山区，坐地铁要差不多坐到1号线/3号线的终点站了。还从来没有去过]]></description>
+</item>
+<item>
     <title>十万年玄冰, 寒冰诀大成！</title>
     <link>https://www.qqxx.love/2024-03-26%E5%8D%81%E4%B8%87%E5%B9%B4%E7%8E%84%E5%86%B0%E5%AF%92%E5%86%B0%E8%AF%80%E5%A4%A7%E6%88%90/</link>
     <pubDate>Tue, 26 Mar 2024 18:01:37 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <author>YuikoTeng</author>
     <guid>https://www.qqxx.love/2024-02-23%E5%B0%8F%E7%AA%9D%E8%A3%85%E4%BF%AE%E4%B9%8B%E8%B7%AF/</guid>
     <description><![CDATA[默认的Hugo主题虽然提供了很多功能，但是还是想要加入一些自己的想法~。还好网络上有很多的大神分享了他们的增强美化经验，对于我这种前端知识基]]></description>
-</item>
-<item>
-    <title>情侣小站的搭建之路</title>
-    <link>https://www.qqxx.love/2024-02-19%E6%83%85%E4%BE%A3%E5%B0%8F%E7%AB%99%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B9%8B%E8%B7%AF/</link>
-    <pubDate>Mon, 19 Feb 2024 16:41:17 &#43;0800</pubDate>
-    <author>YuikoTeng</author>
-    <guid>https://www.qqxx.love/2024-02-19%E6%83%85%E4%BE%A3%E5%B0%8F%E7%AB%99%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B9%8B%E8%B7%AF/</guid>
-    <description><![CDATA[记录其中的种种踩坑之旅]]></description>
 </item>
 </channel>
 </rss>
