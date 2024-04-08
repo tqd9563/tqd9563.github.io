@@ -3,9 +3,17 @@
         <title>QQ和XX的小窝</title>
         <link>https://www.qqxx.love/</link>
         <description>Hugo theme - LoveIt</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 31 Mar 2024 22:46:05 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 08 Apr 2024 11:32:29 &#43;0800</lastBuildDate>
             <atom:link href="https://www.qqxx.love/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>3月减肥大计</title>
+    <link>https://www.qqxx.love/2024-04-08%E5%87%8F%E8%82%A5%E5%A4%A7%E8%AE%A1/</link>
+    <pubDate>Mon, 08 Apr 2024 11:32:29 &#43;0800</pubDate>
+    <author>YuikoTeng</author>
+    <guid>https://www.qqxx.love/2024-04-08%E5%87%8F%E8%82%A5%E5%A4%A7%E8%AE%A1/</guid>
+    <description><![CDATA[因为6月就要拍婚纱照了，老婆的目标是到那个时候减到100~105g左右，参照了B站一个up主用的哈佛减肥法，从2月底开始执行，据说一个月可以]]></description>
+</item>
+<item>
     <title>赏樱花</title>
     <link>https://www.qqxx.love/2024-03-31%E8%B5%8F%E6%A8%B1%E8%8A%B1/</link>
     <pubDate>Sun, 31 Mar 2024 22:46:05 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <author>YuikoTeng</author>
     <guid>https://www.qqxx.love/2024-03-01%E8%94%AC%E8%8F%9C%E7%81%AB%E9%94%85%E8%87%AA%E5%8A%A9/</guid>
     <description><![CDATA[护屎大将军参上！]]></description>
-</item>
-<item>
-    <title>小窝装修之路</title>
-    <link>https://www.qqxx.love/2024-02-23%E5%B0%8F%E7%AA%9D%E8%A3%85%E4%BF%AE%E4%B9%8B%E8%B7%AF/</link>
-    <pubDate>Fri, 23 Feb 2024 16:32:33 &#43;0800</pubDate>
-    <author>YuikoTeng</author>
-    <guid>https://www.qqxx.love/2024-02-23%E5%B0%8F%E7%AA%9D%E8%A3%85%E4%BF%AE%E4%B9%8B%E8%B7%AF/</guid>
-    <description><![CDATA[默认的Hugo主题虽然提供了很多功能，但是还是想要加入一些自己的想法~。还好网络上有很多的大神分享了他们的增强美化经验，对于我这种前端知识基]]></description>
 </item>
 </channel>
 </rss>
