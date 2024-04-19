@@ -28,5 +28,5 @@
 下地铁之后骑电瓶车和老婆一起回家，到家里大概是10点半的样子，洗漱了一下就准备上床休息了。不由自主地又打开了网易云，从头听了一遍《走着走着就散了》，心中却是无限感慨。
 
 
-{{< music url="/music/1594034137.mp3" name="走着走着就散了" artist="庄心妍" cover="/images/zhuangxinyan.jpeg" autoplay=true list-folded=true fixed=true >}}
+{{< music url="/music/庄心妍 - 走着走着就散了.flac" name="走着走着就散了" artist="庄心妍" cover="/images/zhuangxinyan.jpeg" list-folded=true fixed=true autoplay=true >}}
 
