@@ -2,7 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://www.qqxx.love/categories/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://www.qqxx.love/categories/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://www.qqxx.love/en/categories/"
@@ -11,7 +11,8 @@
                     hreflang="zh-cn"
                     href="https://www.qqxx.love/categories/"
                     /></url><url>
-            <loc>https://www.qqxx.love/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://www.qqxx.love/journey/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://www.qqxx.love/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://www.qqxx.love/en/"
@@ -20,8 +21,7 @@
                     hreflang="zh-cn"
                     href="https://www.qqxx.love/"
                     /></url><url>
-            <loc>https://www.qqxx.love/receipes/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://www.qqxx.love/tags/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://www.qqxx.love/tags/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://www.qqxx.love/en/tags/"
@@ -30,14 +30,19 @@
                     hreflang="zh-cn"
                     href="https://www.qqxx.love/tags/"
                     /></url><url>
-            <loc>https://www.qqxx.love/tags/%E5%9C%9F%E8%B1%86%E7%89%9B%E8%82%89/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://www.qqxx.love/categories/%E6%96%99%E7%90%86/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://www.qqxx.love/receipes/2024-08-02%E9%BB%91%E6%A4%92%E5%9C%9F%E8%B1%86%E7%89%9B%E8%82%89%E7%B2%92/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://www.qqxx.love/receipes/2024-07-08%E6%87%92%E4%BA%BA%E7%84%96%E9%A5%AD/</loc><lastmod>2024-07-08T19:23:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
-            <loc>https://www.qqxx.love/journey/</loc><lastmod>2024-05-24T21:56:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://www.qqxx.love/tags/%E5%87%AF%E9%87%8C/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://www.qqxx.love/categories/%E6%B8%B8%E8%AE%B0/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://www.qqxx.love/tags/%E8%B4%B5%E5%B7%9E/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://www.qqxx.love/journey/2024-10-10%E8%B4%B5%E5%B7%9E%E6%97%85%E6%B8%B82%E5%87%AF%E9%87%8C/</loc><lastmod>2024-10-10T15:15:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://www.qqxx.love/journey/2024-10-09%E8%B4%B5%E5%B7%9E%E6%97%85%E6%B8%B81%E9%93%9C%E4%BB%81/</loc><lastmod>2024-10-09T17:24:18&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://www.qqxx.love/tags/%E9%93%9C%E4%BB%81/</loc><lastmod>2024-10-09T17:24:18&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://www.qqxx.love/receipes/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://www.qqxx.love/tags/%E5%9C%9F%E8%B1%86%E7%89%9B%E8%82%89/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://www.qqxx.love/categories/%E6%96%99%E7%90%86/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://www.qqxx.love/receipes/2024-08-02%E9%BB%91%E6%A4%92%E5%9C%9F%E8%B1%86%E7%89%9B%E8%82%89%E7%B2%92/</loc><lastmod>2024-08-02T18:21:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://www.qqxx.love/receipes/2024-07-08%E6%87%92%E4%BA%BA%E7%84%96%E9%A5%AD/</loc><lastmod>2024-07-08T19:23:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://www.qqxx.love/tags/%E6%89%AC%E5%B7%9E/</loc><lastmod>2024-05-24T21:56:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://www.qqxx.love/tags/%E6%B1%9F%E8%8B%8F/</loc><lastmod>2024-05-24T21:56:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://www.qqxx.love/categories/%E6%B8%B8%E8%AE%B0/</loc><lastmod>2024-05-24T21:56:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://www.qqxx.love/journey/2024-06-03%E7%83%9F%E8%8A%B1%E4%BA%94%E6%9C%88%E4%B8%8B%E6%89%AC%E5%B7%9E/</loc><lastmod>2024-05-24T21:56:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://www.qqxx.love/tags/%E4%BA%91%E5%8D%97/</loc><lastmod>2024-05-10T13:41:44&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://www.qqxx.love/journey/2024-05-10%E4%BA%91%E5%8D%97%E6%97%85%E6%B8%B82%E5%A4%A7%E7%90%86/</loc><lastmod>2024-05-10T13:41:44&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
