@@ -93,4 +93,4 @@
 
 告别荔波，Next Station——贵阳！
 
-{{< music server="netease" type="playlist" id="5195373284" autoplay=true order=random list-folded=true fixed=true >}}
+{{< music url="/music/房音瑶 - 诗画瑶山.flac" name="诗画瑶山" artist="房音瑶" cover="/images/yaoshan.jpg" list-folded=true fixed=true autoplay=true >}}
