@@ -54,4 +54,6 @@
 
 Next Station——荔波！
 
+在打车去都匀东高铁站的路上，经过了一片很美的山峰和水流，司机师傅说那里叫清水江龙头河，适合去徒步旅游、在河边吃烧烤。这个景点感觉挺小众的，之前做攻略的时候也没在小红书上有看到推荐，特此记录一下，以后有机会的时候可以再去玩~
+
 {{< music server="netease" type="playlist" id="5195373284" autoplay=true order=random list-folded=true fixed=true >}}
